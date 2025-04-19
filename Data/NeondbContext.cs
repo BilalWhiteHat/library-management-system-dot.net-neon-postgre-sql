@@ -10,7 +10,6 @@ namespace library_management.Data
         {
         }
 
-        // DbSets with null-forgiving operator to suppress warnings
         public DbSet<Author> Authors { get; set; } = null!;
         public DbSet<Book> Books { get; set; } = null!;
         public DbSet<Member> Members { get; set; } = null!;
@@ -29,7 +28,6 @@ namespace library_management.Data
                     .OnDelete(DeleteBehavior.Restrict)
                     .IsRequired();
 
-                // Additional book configurations
                 entity.Property(b => b.Title).IsRequired().HasMaxLength(200);
                 entity.Property(b => b.ISBN).HasMaxLength(13);
                 entity.HasIndex(b => b.ISBN).IsUnique();
@@ -38,25 +36,24 @@ namespace library_management.Data
             // Loan relationships
             modelBuilder.Entity<Loan>(entity =>
             {
-                // Book relationship
                 entity.HasOne(l => l.Book)
                     .WithMany(b => b.Loans)
                     .HasForeignKey(l => l.BookId)
                     .OnDelete(DeleteBehavior.Restrict)
                     .IsRequired();
 
-                // Member relationship
                 entity.HasOne(l => l.Member)
                     .WithMany(m => m.Loans)
                     .HasForeignKey(l => l.MemberId)
                     .OnDelete(DeleteBehavior.Restrict)
                     .IsRequired();
 
-                // Default values
+                // PostgreSQL-compatible date functions
                 entity.Property(l => l.LoanDate)
-                    .HasDefaultValueSql("GETDATE()");
+                    .HasDefaultValueSql("CURRENT_DATE");
+                    
                 entity.Property(l => l.DueDate)
-                    .HasDefaultValueSql("DATEADD(day, 14, GETDATE())");
+                    .HasDefaultValueSql("CURRENT_DATE + INTERVAL '14 days'");
             });
 
             // Author configurations
@@ -84,7 +81,7 @@ namespace library_management.Data
                 entity.Property(m => m.PhoneNumber)
                     .IsRequired();
                 entity.Property(m => m.RegistrationDate)
-                    .HasDefaultValueSql("GETDATE()");
+                    .HasDefaultValueSql("CURRENT_DATE");
                 
                 entity.HasIndex(m => m.Email).IsUnique();
             });

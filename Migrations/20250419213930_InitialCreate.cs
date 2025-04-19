@@ -38,7 +38,7 @@ namespace library_management.Migrations
                     LastName = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
                     Email = table.Column<string>(type: "text", nullable: false),
                     PhoneNumber = table.Column<string>(type: "text", nullable: false),
-                    RegistrationDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false, defaultValueSql: "GETDATE()")
+                    RegistrationDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false, defaultValueSql: "CURRENT_DATE")
                 },
                 constraints: table =>
                 {
@@ -76,8 +76,8 @@ namespace library_management.Migrations
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     BookId = table.Column<int>(type: "integer", nullable: false),
                     MemberId = table.Column<int>(type: "integer", nullable: false),
-                    LoanDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false, defaultValueSql: "GETDATE()"),
-                    DueDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false, defaultValueSql: "DATEADD(day, 14, GETDATE())"),
+                    LoanDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false, defaultValueSql: "CURRENT_DATE"),
+                    DueDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false, defaultValueSql: "CURRENT_DATE + INTERVAL '14 days'"),
                     ReturnDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
                     FineAmount = table.Column<decimal>(type: "numeric", nullable: true)
                 },

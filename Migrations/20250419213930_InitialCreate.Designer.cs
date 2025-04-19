@@ -12,7 +12,7 @@ using library_management.Data;
 namespace library_management.Migrations
 {
     [DbContext(typeof(NeondbContext))]
-    [Migration("20250419212244_InitialCreate")]
+    [Migration("20250419213930_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -105,7 +105,7 @@ namespace library_management.Migrations
                     b.Property<DateTime>("DueDate")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("timestamp with time zone")
-                        .HasDefaultValueSql("DATEADD(day, 14, GETDATE())");
+                        .HasDefaultValueSql("CURRENT_DATE + INTERVAL '14 days'");
 
                     b.Property<decimal?>("FineAmount")
                         .HasColumnType("numeric");
@@ -113,7 +113,7 @@ namespace library_management.Migrations
                     b.Property<DateTime>("LoanDate")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("timestamp with time zone")
-                        .HasDefaultValueSql("GETDATE()");
+                        .HasDefaultValueSql("CURRENT_DATE");
 
                     b.Property<int>("MemberId")
                         .HasColumnType("integer");
@@ -159,7 +159,7 @@ namespace library_management.Migrations
                     b.Property<DateTime>("RegistrationDate")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("timestamp with time zone")
-                        .HasDefaultValueSql("GETDATE()");
+                        .HasDefaultValueSql("CURRENT_DATE");
 
                     b.HasKey("Id");
 
