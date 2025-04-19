@@ -1,11 +1,37 @@
-// Models/Book.cs
+using System;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+
 namespace library_management.Models
 {
     public class Book
     {
-        public int Id { get; set; }
+        [Key]
+        public int BookId { get; set; }
+
+        [Required(ErrorMessage = "Title is required")]
+        [StringLength(200, ErrorMessage = "Title cannot exceed 200 characters")]
         public string Title { get; set; }
-        public string Author { get; set; }
-        // Add other properties as needed
+
+        [StringLength(13, ErrorMessage = "ISBN must be 10 or 13 characters", MinimumLength = 10)]
+        public string ISBN { get; set; }
+
+        [Required]
+        [Display(Name = "Publication Year")]
+        [Range(1000, 2100, ErrorMessage = "Invalid year")]
+        public int PublicationYear { get; set; }
+
+        [Required]
+        [Range(1, 1000, ErrorMessage = "Quantity must be between 1 and 1000")]
+        public int QuantityAvailable { get; set; }
+
+        // Foreign key
+        [Display(Name = "Author")]
+        public int AuthorId { get; set; }
+
+        // Navigation properties
+        [ForeignKey("AuthorId")]
+        public virtual Author Author { get; set; }
+        public virtual ICollection<Loan> Loans { get; set; } = new HashSet<Loan>();
     }
 }
