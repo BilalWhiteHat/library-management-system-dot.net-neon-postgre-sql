@@ -1,6 +1,7 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
+using library_management.Models;
 
 namespace library_management.Models;
 
@@ -34,4 +35,6 @@ protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     }
 
     partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
+
+public DbSet<library_management.Models.Book> Book { get; set; } = default!;
 }
