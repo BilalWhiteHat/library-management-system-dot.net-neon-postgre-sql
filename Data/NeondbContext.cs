@@ -21,19 +21,19 @@ namespace library_management.Data
             modelBuilder.Entity<Book>()
                 .HasOne(b => b.Author)
                 .WithMany(a => a.Books)
-                .HasForeignKey(b => b.AuthorId)
+                .HasForeignKey(b => b.Id)
                 .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<Loan>()
                 .HasOne(l => l.Book)
                 .WithMany(b => b.Loans)
-                .HasForeignKey(l => l.BookId)
+                .HasForeignKey(l => l.Id)
                 .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<Loan>()
                 .HasOne(l => l.Member)
                 .WithMany(m => m.Loans)
-                .HasForeignKey(l => l.MemberId)
+                .HasForeignKey(l => l.Id)
                 .OnDelete(DeleteBehavior.Restrict);
         }
     }

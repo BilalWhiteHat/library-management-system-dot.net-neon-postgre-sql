@@ -7,11 +7,11 @@ namespace library_management.Models
     public class Book
     {
         [Key]
-        public int BookId { get; set; }
+        public int Id { get; set; }
 
         [Required(ErrorMessage = "Title is required")]
         [StringLength(200, ErrorMessage = "Title cannot exceed 200 characters")]
-        public string Title { get; set; }
+        public string Title { get; set; } = string.Empty;
 
         [StringLength(13, ErrorMessage = "ISBN must be 10 or 13 characters", MinimumLength = 10)]
         public string ISBN { get; set; }

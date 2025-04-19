@@ -7,7 +7,7 @@ namespace library_management.Models
     public class Loan
     {
         [Key]
-        public int LoanId { get; set; }
+        public int Id { get; set; }
 
         [Required]
         [Display(Name = "Book")]

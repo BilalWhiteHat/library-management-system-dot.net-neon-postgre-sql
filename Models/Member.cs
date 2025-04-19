@@ -7,7 +7,7 @@ namespace library_management.Models
     public class Member
     {
         [Key]
-        public int MemberId { get; set; }
+        public int Id { get; set; }
 
         [Required(ErrorMessage = "First name is required")]
         [StringLength(100, ErrorMessage = "First name cannot exceed 100 characters")]
@@ -22,6 +22,10 @@ namespace library_management.Models
         [Required]
         [EmailAddress(ErrorMessage = "Invalid email address")]
         public string Email { get; set; }
+
+        // [Required]
+        // [EmailAddress]
+        // public required string Email { get; set; }
 
         [Required]
         [Phone(ErrorMessage = "Invalid phone number")]
