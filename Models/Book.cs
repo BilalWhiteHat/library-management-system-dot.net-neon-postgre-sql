@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -6,6 +7,7 @@ namespace library_management.Models
 {
     public class Book
     {
+        [Required]
         [Key]
         public int Id { get; set; }
 
@@ -14,7 +16,8 @@ namespace library_management.Models
         public string Title { get; set; } = string.Empty;
 
         [StringLength(13, ErrorMessage = "ISBN must be 10 or 13 characters", MinimumLength = 10)]
-        public string ISBN { get; set; }
+        [RegularExpression(@"^\d{10}(\d{3})?$", ErrorMessage = "Invalid ISBN format")]
+        public string? ISBN { get; set; } // Made nullable
 
         [Required]
         [Display(Name = "Publication Year")]
@@ -26,12 +29,14 @@ namespace library_management.Models
         public int QuantityAvailable { get; set; }
 
         // Foreign key
+        [Required]
         [Display(Name = "Author")]
         public int AuthorId { get; set; }
 
         // Navigation properties
         [ForeignKey("AuthorId")]
-        public virtual Author Author { get; set; }
-        public virtual ICollection<Loan> Loans { get; set; } = new HashSet<Loan>();
+        public virtual Author Author { get; set; } = null!; // Ensures non-nullability
+
+        public virtual ICollection<Loan> Loans { get; set; } = new HashSet<Loan>(); // Proper initialization
     }
 }

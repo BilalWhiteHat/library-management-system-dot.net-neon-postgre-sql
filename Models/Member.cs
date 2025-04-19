@@ -12,25 +12,21 @@ namespace library_management.Models
         [Required(ErrorMessage = "First name is required")]
         [StringLength(100, ErrorMessage = "First name cannot exceed 100 characters")]
         [Display(Name = "First Name")]
-        public string FirstName { get; set; }
+        public string FirstName { get; set; } = string.Empty;
 
         [Required(ErrorMessage = "Last name is required")]
         [StringLength(100, ErrorMessage = "Last name cannot exceed 100 characters")]
         [Display(Name = "Last Name")]
-        public string LastName { get; set; }
+        public string LastName { get; set; } = string.Empty;
 
-        [Required]
+        [Required(ErrorMessage = "Email is required")]
         [EmailAddress(ErrorMessage = "Invalid email address")]
-        public string Email { get; set; }
+        public string Email { get; set; } = string.Empty;
 
-        // [Required]
-        // [EmailAddress]
-        // public required string Email { get; set; }
-
-        [Required]
+        [Required(ErrorMessage = "Phone number is required")]
         [Phone(ErrorMessage = "Invalid phone number")]
         [Display(Name = "Phone Number")]
-        public string PhoneNumber { get; set; }
+        public string PhoneNumber { get; set; } = string.Empty;
 
         [DataType(DataType.Date)]
         [Display(Name = "Registration Date")]
