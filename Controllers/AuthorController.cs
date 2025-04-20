@@ -1,13 +1,16 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using library_management.Data;
 using library_management.Models;
 
 namespace library_management.Controllers
 {
-    [Route("api/[controller]")]
-    [ApiController]
-    public class AuthorController : ControllerBase
+    public class AuthorController : Controller
     {
         private readonly NeondbContext _context;
 
@@ -16,76 +19,134 @@ namespace library_management.Controllers
             _context = context;
         }
 
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<Author>>> GetAuthors()
+        // GET: Author
+        public async Task<IActionResult> Index()
         {
-            return await _context.Authors.ToListAsync();
+            return View(await _context.Authors.ToListAsync());
         }
 
-        [HttpGet("{id}")]
-        public async Task<ActionResult<Author>> GetAuthor(int id)
+        // GET: Author/Details/5
+        public async Task<IActionResult> Details(int? id)
         {
-            var author = await _context.Authors.FindAsync(id);
+            if (id == null)
+            {
+                return NotFound();
+            }
 
+            var author = await _context.Authors
+                .FirstOrDefaultAsync(m => m.Id == id);
             if (author == null)
             {
                 return NotFound();
             }
 
-            return author;
+            return View(author);
         }
 
-        [HttpPost]
-        public async Task<ActionResult<Author>> PostAuthor(Author author)
+        // GET: Author/Create
+        public IActionResult Create()
         {
-            _context.Authors.Add(author);
-            await _context.SaveChangesAsync();
-
-            return CreatedAtAction(nameof(GetAuthor), new { id = author.Id }, author);
+            return View();
         }
 
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutAuthor(int id, Author author)
+        // POST: Author/Create
+        // To protect from overposting attacks, enable the specific properties you want to bind to.
+        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Create([Bind("Id,FirstName,LastName,BirthDate,Biography")] Author author)
+        {
+            if (ModelState.IsValid)
+            {
+                _context.Add(author);
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
+            }
+            return View(author);
+        }
+
+        // GET: Author/Edit/5
+        public async Task<IActionResult> Edit(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var author = await _context.Authors.FindAsync(id);
+            if (author == null)
+            {
+                return NotFound();
+            }
+            return View(author);
+        }
+
+        // POST: Author/Edit/5
+        // To protect from overposting attacks, enable the specific properties you want to bind to.
+        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(int id, [Bind("Id,FirstName,LastName,BirthDate,Biography")] Author author)
         {
             if (id != author.Id)
             {
-                return BadRequest();
+                return NotFound();
             }
 
-            _context.Entry(author).State = EntityState.Modified;
-
-            try
+            if (ModelState.IsValid)
             {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!AuthorExists(id))
+                try
                 {
-                    return NotFound();
+                    _context.Update(author);
+                    await _context.SaveChangesAsync();
                 }
-                else
+                catch (DbUpdateConcurrencyException)
                 {
-                    throw;
+                    if (!AuthorExists(author.Id))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
                 }
+                return RedirectToAction(nameof(Index));
             }
-
-            return NoContent();
+            return View(author);
         }
 
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteAuthor(int id)
+        // GET: Author/Delete/5
+        public async Task<IActionResult> Delete(int? id)
         {
-            var author = await _context.Authors.FindAsync(id);
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var author = await _context.Authors
+                .FirstOrDefaultAsync(m => m.Id == id);
             if (author == null)
             {
                 return NotFound();
             }
 
-            _context.Authors.Remove(author);
-            await _context.SaveChangesAsync();
+            return View(author);
+        }
 
-            return NoContent();
+        // POST: Author/Delete/5
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteConfirmed(int id)
+        {
+            var author = await _context.Authors.FindAsync(id);
+            if (author != null)
+            {
+                _context.Authors.Remove(author);
+            }
+
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
         }
 
         private bool AuthorExists(int id)
