@@ -7,7 +7,6 @@ namespace library_management.Models
 {
     public class Book
     {
-        [Required]
         [Key]
         public int Id { get; set; }
 
@@ -17,7 +16,7 @@ namespace library_management.Models
 
         [StringLength(13, ErrorMessage = "ISBN must be 10 or 13 characters", MinimumLength = 10)]
         [RegularExpression(@"^\d{10}(\d{3})?$", ErrorMessage = "Invalid ISBN format")]
-        public string? ISBN { get; set; } // Made nullable
+        public string? ISBN { get; set; }
 
         [Required]
         [Display(Name = "Publication Year")]
@@ -33,10 +32,11 @@ namespace library_management.Models
         [Display(Name = "Author")]
         public int AuthorId { get; set; }
 
-        // Navigation properties
+        // Navigation property for Author
         [ForeignKey("AuthorId")]
-        public virtual Author Author { get; set; } = null!; // Ensures non-nullability
+        public virtual Author Author { get; set; } = null!;
 
-        public virtual ICollection<Loan> Loans { get; set; } = new HashSet<Loan>(); // Proper initialization
+        // Navigation property for Loans
+        public virtual ICollection<Loan> Loans { get; set; } = new HashSet<Loan>();
     }
 }
