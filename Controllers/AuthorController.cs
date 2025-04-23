@@ -58,6 +58,12 @@ namespace library_management.Controllers
         {
             if (ModelState.IsValid)
             {
+                // Convert BirthDate to UTC if it has a value
+                if (author.BirthDate.HasValue)
+                {
+                    author.BirthDate = DateTime.SpecifyKind(author.BirthDate.Value, DateTimeKind.Utc);
+                }
+
                 _context.Add(author);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
@@ -97,6 +103,12 @@ namespace library_management.Controllers
             {
                 try
                 {
+                    // Convert BirthDate to UTC if it has a value
+                    if (author.BirthDate.HasValue)
+                    {
+                        author.BirthDate = DateTime.SpecifyKind(author.BirthDate.Value, DateTimeKind.Utc);
+                    }
+
                     _context.Update(author);
                     await _context.SaveChangesAsync();
                 }
