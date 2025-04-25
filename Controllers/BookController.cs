@@ -48,23 +48,31 @@ namespace library_management.Controllers
         // GET: Book/Create
         public IActionResult Create()
         {
+            // Populate ViewBag with authors
             ViewData["AuthorId"] = new SelectList(_context.Authors, "Id", "FirstName");
             return View();
         }
 
         // POST: Book/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Title,ISBN,PublicationYear,QuantityAvailable,AuthorId")] Book book)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(book);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                try
+                {
+                    _context.Add(book);
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(Index));
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Error saving book: {ex.Message}");
+                }
             }
+
+            // Repopulate ViewBag in case of validation errors
             ViewData["AuthorId"] = new SelectList(_context.Authors, "Id", "FirstName", book.AuthorId);
             return View(book);
         }
