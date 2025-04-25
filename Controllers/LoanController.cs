@@ -140,8 +140,17 @@ namespace library_management.Controllers
             {
                 try
                 {
+                    // Ensure all DateTime values are in UTC
+                    loan.LoanDate = DateTime.SpecifyKind(loan.LoanDate, DateTimeKind.Utc);
+                    loan.DueDate = DateTime.SpecifyKind(loan.DueDate, DateTimeKind.Utc);
+                    if (loan.ReturnDate.HasValue)
+                    {
+                        loan.ReturnDate = DateTime.SpecifyKind(loan.ReturnDate.Value, DateTimeKind.Utc);
+                    }
+
                     _context.Update(loan);
                     await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(Index));
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -154,10 +163,11 @@ namespace library_management.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(Index));
             }
+
+            // Repopulate dropdowns in case of validation errors
             ViewData["BookId"] = new SelectList(_context.Books, "Id", "Title", loan.BookId);
-            ViewData["MemberId"] = new SelectList(_context.Members, "Id", "Email", loan.MemberId);
+            ViewData["MemberId"] = new SelectList(_context.Members, "Id", "FirstName", loan.MemberId);
             return View(loan);
         }
 
