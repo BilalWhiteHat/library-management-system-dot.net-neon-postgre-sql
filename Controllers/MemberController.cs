@@ -98,8 +98,12 @@ namespace library_management.Controllers
             {
                 try
                 {
+                    // Ensure RegistrationDate is in UTC
+                    member.RegistrationDate = DateTime.SpecifyKind(member.RegistrationDate, DateTimeKind.Utc);
+
                     _context.Update(member);
                     await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(Index));
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -112,7 +116,6 @@ namespace library_management.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(Index));
             }
             return View(member);
         }
