@@ -54,10 +54,11 @@ namespace library_management.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,FirstName,LastName,Email,PhoneNumber,RegistrationDate")] Member member)
+        public async Task<IActionResult> Create([Bind("Id,FirstName,LastName,Email,PhoneNumber")] Member member)
         {
             if (ModelState.IsValid)
             {
+                member.RegistrationDate = DateTime.UtcNow; // Ensure UTC
                 _context.Add(member);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));

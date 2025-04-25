@@ -50,7 +50,7 @@ namespace library_management.Controllers
         public IActionResult Create()
         {
             ViewData["BookId"] = new SelectList(_context.Books, "Id", "Title");
-            ViewData["MemberId"] = new SelectList(_context.Members, "Id", "Email");
+            ViewData["MemberId"] = new SelectList(_context.Members, "Id", "FirstName");
             return View();
         }
 

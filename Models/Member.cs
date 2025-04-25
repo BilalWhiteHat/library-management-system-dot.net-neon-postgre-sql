@@ -30,7 +30,7 @@ namespace library_management.Models
 
         [DataType(DataType.Date)]
         [Display(Name = "Registration Date")]
-        public DateTime RegistrationDate { get; set; } = DateTime.Now;
+        public DateTime RegistrationDate { get; set; } = DateTime.UtcNow; // Use UTC
 
         // Navigation property
         public virtual ICollection<Loan> Loans { get; set; } = new HashSet<Loan>();

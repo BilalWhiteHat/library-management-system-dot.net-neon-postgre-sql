@@ -81,7 +81,7 @@ namespace library_management.Data
                 entity.Property(m => m.PhoneNumber)
                     .IsRequired();
                 entity.Property(m => m.RegistrationDate)
-                    .HasDefaultValueSql("CURRENT_DATE");
+                    .HasDefaultValueSql("CURRENT_TIMESTAMP"); // Use UTC in PostgreSQL
                 
                 entity.HasIndex(m => m.Email).IsUnique();
             });
