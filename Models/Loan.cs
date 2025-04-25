@@ -1,6 +1,7 @@
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 
 namespace library_management.Models
 {
@@ -20,12 +21,12 @@ namespace library_management.Models
         [Required(ErrorMessage = "Loan date is required")]
         [DataType(DataType.Date)]
         [Display(Name = "Loan Date")]
-        public DateTime LoanDate { get; set; } = DateTime.Now;
+        public DateTime LoanDate { get; set; } = DateTime.UtcNow; // Ensure UTC
 
         [Required(ErrorMessage = "Due date is required")]
         [DataType(DataType.Date)]
         [Display(Name = "Due Date")]
-        public DateTime DueDate { get; set; } = DateTime.Now.AddDays(14);
+        public DateTime DueDate { get; set; } = DateTime.UtcNow.AddDays(14); // Ensure UTC
 
         [DataType(DataType.Date)]
         [Display(Name = "Return Date")]
@@ -37,9 +38,11 @@ namespace library_management.Models
 
         // Navigation properties
         [ForeignKey("BookId")]
-        public virtual Book Book { get; set; } = null!; // Ensures non-nullability
+        [ValidateNever]
+        public virtual Book Book { get; set; } = null!;
 
         [ForeignKey("MemberId")]
-        public virtual Member Member { get; set; } = null!; // Ensures non-nullability
+        [ValidateNever]
+        public virtual Member Member { get; set; } = null!;
     }
 }

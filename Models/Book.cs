@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 
 namespace library_management.Models
 {
@@ -27,13 +28,12 @@ namespace library_management.Models
         [Range(1, 1000, ErrorMessage = "Quantity must be between 1 and 1000")]
         public int QuantityAvailable { get; set; }
 
-        // Foreign key
-        [Required]
-        [Display(Name = "Author")]
+        // ... other properties ...
+        [Required(ErrorMessage = "The Author field is required")]
         public int AuthorId { get; set; }
 
-        // Navigation property for Author
         [ForeignKey("AuthorId")]
+        [ValidateNever]  // Prevent validation on navigation property
         public virtual Author Author { get; set; } = null!;
 
         // Navigation property for Loans

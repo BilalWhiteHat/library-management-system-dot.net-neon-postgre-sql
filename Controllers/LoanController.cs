@@ -61,14 +61,48 @@ namespace library_management.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,BookId,MemberId,LoanDate,DueDate,ReturnDate,FineAmount")] Loan loan)
         {
+            Console.WriteLine("Create action hit");
+            Console.WriteLine($"Book Data: BookId={loan.BookId}, MemberId={loan.MemberId}, LoanDate={loan.LoanDate}, DueDate={loan.DueDate}, ReturnDate={loan.ReturnDate}, FineAmount={loan.FineAmount}");
+
             if (ModelState.IsValid)
             {
-                _context.Add(loan);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                try
+                {
+                    loan.LoanDate = DateTime.SpecifyKind(loan.LoanDate, DateTimeKind.Utc);
+                    loan.DueDate = DateTime.SpecifyKind(loan.DueDate, DateTimeKind.Utc);
+                    if (loan.ReturnDate.HasValue)
+                    {
+                        loan.ReturnDate = DateTime.SpecifyKind(loan.ReturnDate.Value, DateTimeKind.Utc);
+                    }
+
+                    _context.Add(loan);
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(Index));
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Error saving loan: {ex.Message}");
+                    ModelState.AddModelError("", $"Error saving loan: {ex.Message}");
+                }
             }
+            else
+            {
+                Console.WriteLine("Model state is invalid");
+                foreach (var key in ModelState.Keys)
+                {
+                    var state = ModelState[key];
+                    foreach (var error in state.Errors)
+                    {
+                        Console.WriteLine($"Key: {key}, Error: {error.ErrorMessage}");
+                    }
+                }
+            }
+
             ViewData["BookId"] = new SelectList(_context.Books, "Id", "Title", loan.BookId);
-            ViewData["MemberId"] = new SelectList(_context.Members, "Id", "Email", loan.MemberId);
+            ViewData["MemberId"] = new SelectList(
+                _context.Members.Select(m => new { m.Id, FullName = m.FirstName + " " + m.LastName }),
+                "Id", "FullName", loan.MemberId);
+
             return View(loan);
         }
 

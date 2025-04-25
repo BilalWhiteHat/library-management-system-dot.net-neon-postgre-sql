@@ -58,18 +58,32 @@ namespace library_management.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Title,ISBN,PublicationYear,QuantityAvailable,AuthorId")] Book book)
         {
+            Console.WriteLine("Create action hit"); // Log to confirm the action is hit
+            Console.WriteLine($"Book Data: Title={book.Title}, ISBN={book.ISBN}, Year={book.PublicationYear}, Quantity={book.QuantityAvailable}, AuthorId={book.AuthorId}");
+
             if (ModelState.IsValid)
             {
                 try
                 {
                     _context.Add(book);
                     await _context.SaveChangesAsync();
+                    Console.WriteLine("Book saved successfully");
                     return RedirectToAction(nameof(Index));
                 }
                 catch (Exception ex)
                 {
                     Console.WriteLine($"Error saving book: {ex.Message}");
+                    ModelState.AddModelError("", $"Error saving book: {ex.Message}");
                 }
+            }
+            else{
+                Console.WriteLine("Model state is invalid");
+            }
+
+            // Log validation errors
+            foreach (var error in ModelState.Values.SelectMany(v => v.Errors))
+            {
+                Console.WriteLine($"Validation Error: {error.ErrorMessage}");
             }
 
             // Repopulate ViewBag in case of validation errors
